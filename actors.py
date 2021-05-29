@@ -2,6 +2,7 @@ import random
 from typing import Text
 from termcolors import bcolors
 from textstrings import TextStrings
+from objectstats import ObjectStats
 import pyinputplus
 
 
@@ -100,7 +101,6 @@ class Person:
         print(TextStrings.str17)
         for spell in self.magic:
             print(TextStrings.str29 % (str(i), spell.name, str(spell.cost)))
-            #print(str(i) + ".", spell.name, "(cost: ", str(spell.cost) + ")" )
             i += 1
         return i-1
 
@@ -109,7 +109,6 @@ class Person:
         print(TextStrings.str18)
         for item in self.items:
             print(TextStrings.str30 % (str(i), item.name, str(item.quantity), item.description))
-            #print(bcolors.OKGREEN + str(i) + bcolors.ENDC + ".", bcolors.WARNING, item.name, bcolors.ENDC,  ":", item.description, "(x" + str(item.quantity) + ")")
             i += 1
         return i-1       
 
@@ -131,25 +130,17 @@ class Person:
 
     def get_stats(self):
 
-        hp_bar = ""
-        hp_bar_ticks = (self.hp / self.maxhp) * 100 / 4
-
-        while hp_bar_ticks > 0:
-            hp_bar += "█"
-            hp_bar_ticks -= 1
-
-        mp_bar = ""
-        mp_bar_ticks = (self.mp / self.maxmp) * 100 / 10
-
-        while mp_bar_ticks > 0:
-            mp_bar += "█"
-            mp_bar_ticks -= 1     
-        
         if self.type == "player":
-            print(TextStrings.str21 % ((self.name).ljust(10),str(self.hp).ljust(4),str(self.maxhp).ljust(4),hp_bar.ljust(25),str(self.mp).ljust(3),str(self.maxmp).ljust(3),mp_bar.ljust(10)))
+             player_health_stats = ObjectStats(actor_name=self.name, actor_name_len=10, actor_name_color=bcolors.OKBLUE, current_value=self.hp, value_max=self.maxhp, bar_size=20, stat_name="HP", newline=False, bar_color=bcolors.OKGREEN)
+             player_health_stats.print_stats()
+             player_magic_stats = ObjectStats(current_value=self.mp, value_max=self.maxmp, bar_size=10, stat_name="MP", newline=True, bar_color=bcolors.OKBLUE)
+             player_magic_stats.print_stats()
             
         elif self.type == "enemy":
-            print(TextStrings.str22 % ((self.name).ljust(10),str(self.hp).ljust(4),str(self.maxhp).ljust(4),hp_bar.ljust(25),str(self.mp).ljust(3),str(self.maxmp).ljust(3),mp_bar.ljust(10)))
+             enemy_health_stats = ObjectStats(actor_name=self.name, actor_name_len=10, actor_name_color=bcolors.FAIL, current_value=self.hp, value_max=self.maxhp, bar_size=20, stat_name="HP", newline=False, bar_color=bcolors.FAIL)
+             enemy_health_stats.print_stats()
+             enemy_magic_stats = ObjectStats(current_value=self.mp, value_max=self.maxmp, bar_size=10, stat_name="MP", newline=True, bar_color=bcolors.WARNING)
+             enemy_magic_stats.print_stats()
 
     @staticmethod
     def persons_alive(persons):
